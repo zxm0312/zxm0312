@@ -152,3 +152,14 @@ zhang_prompt.md要之前所有文件的
 - 提示词:
 设置规则,写入agents.md：新建的html文件加入超链接到首页index.html
 
+
+## 2026-10-15-16-30
+- 模型: opencode/mimo-v2.6-flash-free
+- 提示词:
+创建网页12-1.html，展示css变量，然后提交项目。页面包括文字张轩铭（补录，执行前未写入）
+
+## 2026-10-15-16-34
+- 模型: opencode/mimo-v2.6-flash-free
+- 提示词:
+新建的网页要符合zhang_prompt.md的要求
+

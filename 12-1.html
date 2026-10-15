@@ -7,36 +7,36 @@
     <style>
         /* ========== 在 :root 中定义全局 CSS 变量 ========== */
         :root {
-            --primary: #2f6fed;
-            --secondary: #6e56cf;
-            --accent: #f59e0b;
-            --bg: #f4f7ff;
-            --surface: #ffffff;
-            --ink: #17233c;
-            --muted: #69758d;
-            --radius: 16px;
-            --gap: 20px;
+            --zhang_primary: #2f6fed;
+            --zhang_secondary: #6e56cf;
+            --zhang_accent: #f59e0b;
+            --zhang_bg: #f4f7ff;
+            --zhang_surface: #ffffff;
+            --zhang_ink: #17233c;
+            --zhang_muted: #69758d;
+            --zhang_radius: 16px;
+            --zhang_gap: 20px;
         }
 
         /* ========== 备用主题：直接覆盖变量即可换肤 ========== */
-        body.theme-dark {
-            --primary: #60a5fa;
-            --secondary: #a78bfa;
-            --accent: #fbbf24;
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --ink: #e2e8f0;
-            --muted: #94a3b8;
+        body.zhang_theme-dark {
+            --zhang_primary: #60a5fa;
+            --zhang_secondary: #a78bfa;
+            --zhang_accent: #fbbf24;
+            --zhang_bg: #0f172a;
+            --zhang_surface: #1e293b;
+            --zhang_ink: #e2e8f0;
+            --zhang_muted: #94a3b8;
         }
 
-        body.theme-warm {
-            --primary: #e11d48;
-            --secondary: #ea580c;
-            --accent: #16a34a;
-            --bg: #fff7ed;
-            --surface: #ffffff;
-            --ink: #431407;
-            --muted: #9a3412;
+        body.zhang_theme-warm {
+            --zhang_primary: #e11d48;
+            --zhang_secondary: #ea580c;
+            --zhang_accent: #16a34a;
+            --zhang_bg: #fff7ed;
+            --zhang_surface: #ffffff;
+            --zhang_ink: #431407;
+            --zhang_muted: #9a3412;
         }
 
         * {
@@ -48,14 +48,14 @@
         body {
             min-height: 100vh;
             /* 变量应用在样式中 */
-            background: var(--bg);
-            color: var(--ink);
+            background: var(--zhang_bg);
+            color: var(--zhang_ink);
             font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
             transition: background 0.4s ease, color 0.4s ease;
             padding: 40px 20px;
         }
 
-        .wrap {
+        .zhang_wrap {
             width: min(960px, 100%);
             margin: 0 auto;
         }
@@ -67,14 +67,14 @@
             margin-bottom: 8px;
         }
 
-        .sub {
+        .zhang_sub {
             text-align: center;
-            color: var(--muted);
+            color: var(--zhang_muted);
             margin-bottom: 30px;
         }
 
         /* ========== 主题切换按钮 ========== */
-        .toolbar {
+        .zhang_toolbar {
             display: flex;
             justify-content: center;
             gap: 12px;
@@ -82,58 +82,58 @@
             flex-wrap: wrap;
         }
 
-        .toolbar button {
+        .zhang_toolbar button {
             padding: 10px 22px;
             border: none;
             border-radius: 999px;
             font-size: 14px;
             cursor: pointer;
             color: #fff;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--zhang_primary), var(--zhang_secondary));
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .toolbar button:hover {
+        .zhang_toolbar button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 18px rgba(47, 111, 237, 0.3);
         }
 
         /* ========== 变量展示卡片 ========== */
-        .grid {
+        .zhang_grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: var(--gap);
+            gap: var(--zhang_gap);
         }
 
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius);
+        .zhang_card {
+            background: var(--zhang_surface);
+            border-radius: var(--zhang_radius);
             padding: 22px;
             box-shadow: 0 10px 28px rgba(23, 35, 60, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.7);
             transition: background 0.4s ease, transform 0.2s ease;
         }
 
-        .card:hover {
+        .zhang_card:hover {
             transform: translateY(-4px);
         }
 
-        .card h2 {
+        .zhang_card h2 {
             font-size: 18px;
             margin-bottom: 10px;
-            color: var(--primary);
+            color: var(--zhang_primary);
         }
 
-        .swatch {
+        .zhang_swatch {
             height: 64px;
             border-radius: 10px;
             margin-bottom: 12px;
         }
 
-        .swatch.primary { background: var(--primary); }
-        .swatch.secondary { background: var(--secondary); }
-        .swatch.accent { background: var(--accent); }
-        .swatch.bg { background: var(--bg); border: 1px dashed var(--muted); }
+        .zhang_swatch.zhang_primary { background: var(--zhang_primary); }
+        .zhang_swatch.zhang_secondary { background: var(--zhang_secondary); }
+        .zhang_swatch.zhang_accent { background: var(--zhang_accent); }
+        .zhang_swatch.zhang_bg { background: var(--zhang_bg); border: 1px dashed var(--zhang_muted); }
 
         code {
             display: inline-block;
@@ -142,105 +142,106 @@
             border-radius: 6px;
             font-size: 13px;
             background: rgba(47, 111, 237, 0.1);
-            color: var(--primary);
+            color: var(--zhang_primary);
         }
 
         /* ========== 演示区：同一套样式，变量不同结果不同 ========== */
-        .demo {
+        .zhang_demo {
             margin-top: 36px;
-            background: var(--surface);
-            border-radius: var(--radius);
+            background: var(--zhang_surface);
+            border-radius: var(--zhang_radius);
             padding: 26px;
             box-shadow: 0 10px 28px rgba(23, 35, 60, 0.08);
+            transition: background 0.4s ease;
         }
 
-        .demo h2 {
+        .zhang_demo h2 {
             margin-bottom: 16px;
             font-size: 20px;
         }
 
-        .badge-row {
+        .zhang_badge-row {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin-bottom: 18px;
         }
 
-        .badge {
+        .zhang_badge {
             padding: 10px 20px;
             border-radius: 999px;
             color: #fff;
             font-size: 14px;
         }
 
-        .badge.b1 { background: var(--primary); }
-        .badge.b2 { background: var(--secondary); }
-        .badge.b3 { background: var(--accent); }
+        .zhang_badge.zhang_b1 { background: var(--zhang_primary); }
+        .zhang_badge.zhang_b2 { background: var(--zhang_secondary); }
+        .zhang_badge.zhang_b3 { background: var(--zhang_accent); }
 
-        .name-box {
+        .zhang_name-box {
             display: inline-block;
             padding: 16px 32px;
-            border-radius: var(--radius);
+            border-radius: var(--zhang_radius);
             font-size: 26px;
             letter-spacing: 6px;
             color: #fff;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--zhang_primary), var(--zhang_secondary));
             box-shadow: 0 10px 24px rgba(47, 111, 237, 0.35);
         }
 
-        footer {
+        .zhang_footer {
             margin-top: 40px;
             text-align: center;
-            color: var(--muted);
+            color: var(--zhang_muted);
             font-size: 13px;
         }
     </style>
 </head>
 <body>
-    <div class="wrap">
+    <div class="zhang_wrap">
         <h1>CSS 变量演示</h1>
-        <p class="sub">在 :root 中定义变量，通过 var() 引用；切换主题只需覆盖变量值</p>
+        <p class="zhang_sub">在 :root 中定义变量，通过 var() 引用；切换主题只需覆盖变量值</p>
 
-        <div class="toolbar">
+        <div class="zhang_toolbar">
             <button onclick="document.body.className=''" style="background:linear-gradient(135deg,#2f6fed,#6e56cf)">默认主题</button>
-            <button onclick="document.body.className='theme-dark'" style="background:linear-gradient(135deg,#334155,#475569)">暗色主题</button>
-            <button onclick="document.body.className='theme-warm'" style="background:linear-gradient(135deg,#e11d48,#ea580c)">暖色主题</button>
+            <button onclick="document.body.className='zhang_theme-dark'" style="background:linear-gradient(135deg,#334155,#475569)">暗色主题</button>
+            <button onclick="document.body.className='zhang_theme-warm'" style="background:linear-gradient(135deg,#e11d48,#ea580c)">暖色主题</button>
         </div>
 
-        <div class="grid">
-            <div class="card">
-                <h2>主色 --primary</h2>
-                <div class="swatch primary"></div>
-                <code>background: var(--primary)</code>
+        <div class="zhang_grid">
+            <div class="zhang_card">
+                <h2>主色 --zhang_primary</h2>
+                <div class="zhang_swatch zhang_primary"></div>
+                <code>background: var(--zhang_primary)</code>
             </div>
-            <div class="card">
-                <h2>辅色 --secondary</h2>
-                <div class="swatch secondary"></div>
-                <code>background: var(--secondary)</code>
+            <div class="zhang_card">
+                <h2>辅色 --zhang_secondary</h2>
+                <div class="zhang_swatch zhang_secondary"></div>
+                <code>background: var(--zhang_secondary)</code>
             </div>
-            <div class="card">
-                <h2>强调色 --accent</h2>
-                <div class="swatch accent"></div>
-                <code>background: var(--accent)</code>
+            <div class="zhang_card">
+                <h2>强调色 --zhang_accent</h2>
+                <div class="zhang_swatch zhang_accent"></div>
+                <code>background: var(--zhang_accent)</code>
             </div>
-            <div class="card">
-                <h2>背景色 --bg</h2>
-                <div class="swatch bg"></div>
-                <code>background: var(--bg)</code>
+            <div class="zhang_card">
+                <h2>背景色 --zhang_bg</h2>
+                <div class="zhang_swatch zhang_bg"></div>
+                <code>background: var(--zhang_bg)</code>
             </div>
         </div>
 
-        <div class="demo">
+        <div class="zhang_demo">
             <h2>变量的应用</h2>
-            <div class="badge-row">
-                <span class="badge b1">--primary</span>
-                <span class="badge b2">--secondary</span>
-                <span class="badge b3">--accent</span>
+            <div class="zhang_badge-row">
+                <span class="zhang_badge zhang_b1">--zhang_primary</span>
+                <span class="zhang_badge zhang_b2">--zhang_secondary</span>
+                <span class="zhang_badge zhang_b3">--zhang_accent</span>
             </div>
-            <div class="name-box">张轩铭</div>
+            <div class="zhang_name-box">张轩铭</div>
         </div>
 
-        <footer>312 张轩铭 · CSS 变量（Custom Properties）实践</footer>
+        <footer class="zhang_footer">312 张轩铭 · CSS 变量（Custom Properties）实践</footer>
     </div>
 </body>
 </html>
