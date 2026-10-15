@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS3 3D动画展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .zhang_sub_title {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .zhang_container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .zhang_card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .zhang_card:hover {
+            transform: translateY(-5px);
+        }
+
+        .zhang_card h2 {
+            color: #302b63;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 20px;
+        }
+
+        .zhang_card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .zhang_demo {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 240px;
+            overflow: hidden;
+        }
+
+        .zhang_demo_label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            font-family: Consolas, monospace;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* ============ 1. 旋转立方体 ============ */
+        .zhang_cube_wrap {
+            perspective: 600px;
+        }
+
+        .zhang_cube {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: zhang_cube_rotate 8s infinite linear;
+        }
+
+        .zhang_cube_face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .zhang_face_front  { background: rgba(255, 107, 107, 0.9); transform: translateZ(50px); }
+        .zhang_face_back   { background: rgba(118, 75, 162, 0.9);  transform: rotateY(180deg) translateZ(50px); }
+        .zhang_face_right  { background: rgba(0, 184, 148, 0.9);   transform: rotateY(90deg) translateZ(50px); }
+        .zhang_face_left   { background: rgba(9, 132, 227, 0.9);   transform: rotateY(-90deg) translateZ(50px); }
+        .zhang_face_top    { background: rgba(253, 203, 110, 0.9); transform: rotateX(90deg) translateZ(50px); color: #333; }
+        .zhang_face_bottom { background: rgba(232, 67, 147, 0.9);  transform: rotateX(-90deg) translateZ(50px); }
+
+        @keyframes zhang_cube_rotate {
+            0%   { transform: rotateX(-20deg) rotateY(0deg); }
+            100% { transform: rotateX(-20deg) rotateY(360deg); }
+        }
+
+        /* ============ 2. 翻转卡片 ============ */
+        .zhang_flip_wrap {
+            perspective: 1000px;
+        }
+
+        .zhang_flip_card {
+            width: 180px;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .zhang_flip_wrap:hover .zhang_flip_card {
+            transform: rotateY(180deg);
+        }
+
+        .zhang_flip_face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .zhang_flip_front {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+        }
+
+        .zhang_flip_back {
+            background: linear-gradient(135deg, #e17055, #fab1a0);
+            transform: rotateY(180deg);
+        }
+
+        .zhang_flip_face small {
+            margin-top: 8px;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        /* ============ 3. 3D旋转木马 ============ */
+        .zhang_carousel_wrap {
+            perspective: 800px;
+            width: 100%;
+            height: 220px;
+            position: relative;
+        }
+
+        .zhang_carousel {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -60px 0 0 -60px;
+            transform-style: preserve-3d;
+            animation: zhang_carousel_rotate 12s infinite linear;
+        }
+
+        .zhang_carousel_wrap:hover .zhang_carousel {
+            animation-play-state: paused;
+        }
+
+        .zhang_carousel_item {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .zhang_slide_1 { background: rgba(255, 107, 107, 0.85); transform: rotateY(0deg) translateZ(180px); }
+        .zhang_slide_2 { background: rgba(253, 203, 110, 0.85); transform: rotateY(60deg) translateZ(180px); color: #333; }
+        .zhang_slide_3 { background: rgba(85, 239, 196, 0.85); transform: rotateY(120deg) translateZ(180px); color: #333; }
+        .zhang_slide_4 { background: rgba(116, 185, 255, 0.85); transform: rotateY(180deg) translateZ(180px); }
+        .zhang_slide_5 { background: rgba(162, 155, 254, 0.85); transform: rotateY(240deg) translateZ(180px); }
+        .zhang_slide_6 { background: rgba(232, 67, 147, 0.85);  transform: rotateY(300deg) translateZ(180px); }
+
+        @keyframes zhang_carousel_rotate {
+            0%   { transform: rotateX(-15deg) rotateY(0deg); }
+            100% { transform: rotateX(-15deg) rotateY(360deg); }
+        }
+
+        /* ============ 4. 3D金字塔 ============ */
+        .zhang_pyr_wrap {
+            perspective: 700px;
+        }
+
+        .zhang_pyr {
+            width: 0;
+            height: 0;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: zhang_pyr_rotate 10s infinite linear;
+        }
+
+        .zhang_pyr_side {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 104px solid rgba(0, 184, 148, 0.75);
+            transform-origin: 50% 100%;
+        }
+
+        .zhang_pyr_s1 { transform: rotateY(0deg)   translateZ(34.6px) rotateX(30deg); border-bottom-color: rgba(255, 107, 107, 0.8); }
+        .zhang_pyr_s2 { transform: rotateY(90deg)  translateZ(34.6px) rotateX(30deg); border-bottom-color: rgba(253, 203, 110, 0.8); }
+        .zhang_pyr_s3 { transform: rotateY(180deg) translateZ(34.6px) rotateX(30deg); border-bottom-color: rgba(116, 185, 255, 0.8); }
+        .zhang_pyr_s4 { transform: rotateY(270deg) translateZ(34.6px) rotateX(30deg); border-bottom-color: rgba(162, 155, 254, 0.8); }
+
+        .zhang_pyr_base {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(85, 239, 196, 0.5);
+            transform: rotateX(90deg) translateZ(-52px);
+        }
+
+        @keyframes zhang_pyr_rotate {
+            0%   { transform: rotateX(-25deg) rotateY(0deg); }
+            100% { transform: rotateX(-25deg) rotateY(360deg); }
+        }
+
+        /* ============ 5. 3D弹跳立方体 ============ */
+        .zhang_bounce_wrap {
+            perspective: 600px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 200px;
+            width: 100%;
+            background: linear-gradient(to top, rgba(255,255,255,0.08) 0 2px, transparent 2px);
+            background-size: 100% 100%;
+        }
+
+        .zhang_bounce_stage {
+            transform-style: preserve-3d;
+            animation: zhang_bounce_y 1.6s infinite ease-in-out;
+        }
+
+        .zhang_bounce_cube {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: zhang_bounce_spin 1.6s infinite ease-in-out;
+        }
+
+        .zhang_bounce_face {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .zhang_b_f1 { background: rgba(255, 107, 107, 0.85); transform: translateZ(30px); }
+        .zhang_b_f2 { background: rgba(118, 75, 162, 0.85);  transform: rotateY(180deg) translateZ(30px); }
+        .zhang_b_f3 { background: rgba(0, 184, 148, 0.85);   transform: rotateY(90deg) translateZ(30px); }
+        .zhang_b_f4 { background: rgba(9, 132, 227, 0.85);   transform: rotateY(-90deg) translateZ(30px); }
+        .zhang_b_f5 { background: rgba(253, 203, 110, 0.85); transform: rotateX(90deg) translateZ(30px); }
+        .zhang_b_f6 { background: rgba(232, 67, 147, 0.85);  transform: rotateX(-90deg) translateZ(30px); }
+
+        @keyframes zhang_bounce_y {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-110px); }
+        }
+
+        @keyframes zhang_bounce_spin {
+            0%, 100% { transform: rotateX(-20deg) rotateY(0deg); }
+            50%      { transform: rotateX(-20deg) rotateY(180deg); }
+        }
+
+        /* ============ 6. 3D翻转图墙 ============ */
+        .zhang_wall {
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            gap: 12px;
+            perspective: 600px;
+        }
+
+        .zhang_wall_item {
+            width: 70px;
+            height: 70px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: zhang_wall_flip 3.6s infinite;
+        }
+
+        .zhang_wall_item:nth-child(1) { animation-delay: 0s; }
+        .zhang_wall_item:nth-child(2) { animation-delay: 0.3s; }
+        .zhang_wall_item:nth-child(3) { animation-delay: 0.6s; }
+        .zhang_wall_item:nth-child(4) { animation-delay: 0.9s; }
+        .zhang_wall_item:nth-child(5) { animation-delay: 1.2s; }
+        .zhang_wall_item:nth-child(6) { animation-delay: 1.5s; }
+        .zhang_wall_item:nth-child(7) { animation-delay: 1.8s; }
+        .zhang_wall_item:nth-child(8) { animation-delay: 2.1s; }
+        .zhang_wall_item:nth-child(9) { animation-delay: 2.4s; }
+
+        .zhang_wall_face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .zhang_wall_front {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        }
+
+        .zhang_wall_back {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: #fff;
+            transform: rotateY(180deg);
+        }
+
+        @keyframes zhang_wall_flip {
+            0%, 30%  { transform: rotateY(0deg); }
+            50%, 80% { transform: rotateY(180deg); }
+            100%     { transform: rotateY(360deg); }
+        }
+
+        /* ============ 属性说明表 ============ */
+        .zhang_prop_table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .zhang_prop_table th,
+        .zhang_prop_table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .zhang_prop_table th {
+            background: #302b63;
+            color: #fff;
+        }
+
+        .zhang_prop_table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .zhang_prop_table tr:hover {
+            background: #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS3 3D动画展示</h1>
+    <p class="zhang_sub_title">transform-style / perspective / backface-visibility / @keyframes 综合演示（悬停可交互）</p>
+
+    <div class="zhang_container">
+        <!-- 1. 旋转立方体 -->
+        <div class="zhang_card">
+            <h2>1. 3D旋转立方体</h2>
+            <p>使用 <code>transform-style: preserve-3d</code> 构建六个面，配合 <code>rotateX/rotateY + translateZ</code> 摆放空间位置，通过关键帧动画持续旋转。</p>
+            <div class="zhang_demo">
+                <div class="zhang_cube_wrap">
+                    <div class="zhang_cube">
+                        <div class="zhang_cube_face zhang_face_front">前</div>
+                        <div class="zhang_cube_face zhang_face_back">后</div>
+                        <div class="zhang_cube_face zhang_face_right">右</div>
+                        <div class="zhang_cube_face zhang_face_left">左</div>
+                        <div class="zhang_cube_face zhang_face_top">上</div>
+                        <div class="zhang_cube_face zhang_face_bottom">下</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 翻转卡片 -->
+        <div class="zhang_card">
+            <h2>3D翻转卡片（悬停触发）</h2>
+            <p>正面通过 <code>backface-visibility: hidden</code> 隐藏背面，背面预先 <code>rotateY(180deg)</code>。悬停容器时整体旋转180°，实现双面翻转效果。</p>
+            <div class="zhang_demo">
+                <div class="zhang_flip_wrap">
+                    <div class="zhang_flip_card">
+                        <div class="zhang_flip_front zhang_flip_face">
+                            正面
+                            <small>Hover Me →</small>
+                        </div>
+                        <div class="zhang_flip_back zhang_flip_face">
+                            背面
+                            <small>← Backface</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 3D旋转木马 -->
+        <div class="zhang_card">
+            <h2>3D旋转木马（悬停暂停）</h2>
+            <p>6个面板沿Y轴均匀分布（每60°一个），<code>translateZ(180px)</code> 形成环形半径，父级 <code>perspective</code> 提供透视，悬停时 <code>animation-play-state: paused</code> 暂停。</p>
+            <div class="zhang_demo">
+                <div class="zhang_carousel_wrap">
+                    <div class="zhang_carousel">
+                        <div class="zhang_carousel_item zhang_slide_1">1</div>
+                        <div class="zhang_carousel_item zhang_slide_2">2</div>
+                        <div class="zhang_carousel_item zhang_slide_3">3</div>
+                        <div class="zhang_carousel_item zhang_slide_4">4</div>
+                        <div class="zhang_carousel_item zhang_slide_5">5</div>
+                        <div class="zhang_carousel_item zhang_slide_6">6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 3D金字塔 -->
+        <div class="zhang_card">
+            <h2>3D四棱锥（金字塔）</h2>
+            <p>四个三角形面通过 <code>border</code> 绘制，配合 <code>rotateY + translateZ + rotateX</code> 围合成锥体，底部用一个方形面封底。</p>
+            <div class="zhang_demo">
+                <div class="zhang_pyr_wrap">
+                    <div class="zhang_pyr">
+                        <div class="zhang_pyr_side zhang_pyr_s1"></div>
+                        <div class="zhang_pyr_side zhang_pyr_s2"></div>
+                        <div class="zhang_pyr_side zhang_pyr_s3"></div>
+                        <div class="zhang_pyr_side zhang_pyr_s4"></div>
+                        <div class="zhang_pyr_base"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 3D弹跳立方体 -->
+        <div class="zhang_card">
+            <h2>3D弹跳立方体</h2>
+            <p>两个动画并行：Y轴位移实现弹跳（ease-in-out 模拟重力），同时绕X/Y轴翻滚，展示多动画组合的3D效果。</p>
+            <div class="zhang_demo">
+                <div class="zhang_bounce_wrap">
+                    <div class="zhang_bounce_stage">
+                        <div class="zhang_bounce_cube">
+                            <div class="zhang_bounce_face zhang_b_f1"></div>
+                            <div class="zhang_bounce_face zhang_b_f2"></div>
+                            <div class="zhang_bounce_face zhang_b_f3"></div>
+                            <div class="zhang_bounce_face zhang_b_f4"></div>
+                            <div class="zhang_bounce_face zhang_b_f5"></div>
+                            <div class="zhang_bounce_face zhang_b_f6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. 3D翻转图墙 -->
+        <div class="zhang_card">
+            <h2>3D翻转图墙（级联动画）</h2>
+            <p>9个格子使用同一组关键帧，通过不同的 <code>animation-delay</code> 形成波浪式依次翻转的级联效果。</p>
+            <div class="zhang_demo">
+                <div class="zhang_wall">
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">1</div><div class="zhang_wall_face zhang_wall_back">A</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">2</div><div class="zhang_wall_face zhang_wall_back">B</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">3</div><div class="zhang_wall_face zhang_wall_back">C</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">4</div><div class="zhang_wall_face zhang_wall_back">D</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">5</div><div class="zhang_wall_face zhang_wall_back">E</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">6</div><div class="zhang_wall_face zhang_wall_back">F</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">7</div><div class="zhang_wall_face zhang_wall_back">G</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">8</div><div class="zhang_wall_face zhang_wall_back">H</div></div>
+                    <div class="zhang_wall_item"><div class="zhang_wall_face zhang_wall_front">9</div><div class="zhang_wall_face zhang_wall_back">I</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 核心属性表 -->
+        <div class="zhang_card" style="grid-column: 1 / -1;">
+            <h2>CSS3 3D核心属性总结</h2>
+            <table class="zhang_prop_table">
+                <thead>
+                    <tr>
+                        <th>属性 / 函数</th>
+                        <th>作用</th>
+                        <th>本页示例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>perspective</strong></td>
+                        <td>设置父元素透视距离，数值越小透视越强</td>
+                        <td>立方体 600px、卡片 1000px</td>
+                    </tr>
+                    <tr>
+                        <td><strong>transform-style: preserve-3d</strong></td>
+                        <td>子元素保留3D空间位置，不被压扁</td>
+                        <td>立方体、木马、金字塔容器</td>
+                    </tr>
+                    <tr>
+                        <td><strong>backface-visibility</strong></td>
+                        <td>隐藏元素背面，翻转时避免"穿帮"</td>
+                        <td>翻转卡片、翻转图墙</td>
+                    </tr>
+                    <tr>
+                        <td><strong>rotateX / rotateY / rotateZ</strong></td>
+                        <td>绕X/Y/Z轴旋转元素</td>
+                        <td>立方体绕Y轴、木马绕Y轴</td>
+                    </tr>
+                    <tr>
+                        <td><strong>translateZ (translate3d)</strong></td>
+                        <td>沿Z轴平移，产生前后深度</td>
+                        <td>立方体面 ±50px、木马半径 180px</td>
+                    </tr>
+                    <tr>
+                        <td><strong>animation-play-state</strong></td>
+                        <td>控制动画运行/暂停</td>
+                        <td>旋转木马悬停暂停</td>
+                    </tr>
+                    <tr>
+                        <td><strong>animation-delay</strong></td>
+                        <td>延迟启动动画，制作级联效果</td>
+                        <td>翻转图墙依次翻转</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

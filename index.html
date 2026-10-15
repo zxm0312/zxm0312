@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>312 张轩铭 | 高级网页设计课堂实践</title>
+    <style>
+        :root {
+            --ink: #17233c;
+            --muted: #69758d;
+            --primary: #2f6fed;
+            --secondary: #6e56cf;
+            --surface: rgba(255, 255, 255, 0.9);
+            --line: #e5eaf3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+            background: radial-gradient(circle at 12% 8%, #dce9ff 0, transparent 28%),
+                        radial-gradient(circle at 92% 12%, #e6ddff 0, transparent 27%),
+                        linear-gradient(135deg, #f7faff, #eef2fb);
+        }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        header { padding: 72px 0 48px; text-align: center; }
+        .eyebrow {
+            display: inline-block; padding: 7px 14px; border: 1px solid #cbd9fb;
+            border-radius: 999px; color: var(--primary); background: #edf3ff;
+            font-size: 13px; letter-spacing: 2px;
+        }
+        h1 { margin: 20px 0 12px; font-size: clamp(32px, 5vw, 58px); line-height: 1.15; letter-spacing: 2px; }
+        .subtitle { margin: 0; color: var(--muted); font-size: 17px; }
+        main { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 24px; padding-bottom: 52px; }
+        .panel {
+            border: 1px solid rgba(255, 255, 255, 0.75); border-radius: 22px; padding: 30px;
+            background: var(--surface); box-shadow: 0 18px 45px rgba(46, 71, 119, 0.1);
+            backdrop-filter: blur(8px);
+        }
+        h2 { margin: 0 0 8px; font-size: 24px; }
+        .hint { margin: 0 0 22px; color: var(--muted); font-size: 14px; }
+        .links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .link-card {
+            display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 14px 16px;
+            border: 1px solid var(--line); border-radius: 15px; color: var(--ink); text-decoration: none;
+            background: #fff; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .link-card:hover { border-color: #a8c1fa; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(47, 111, 237, 0.12); }
+        .number {
+            display: grid; flex: 0 0 40px; place-items: center; width: 40px; height: 40px;
+            border-radius: 12px; color: #fff; font-weight: bold; background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        .link-card strong { display: block; margin-bottom: 4px; }
+        .link-card small { color: var(--muted); }
+        .prompt { border-left: 4px solid var(--secondary); padding: 18px 18px 18px 20px; color: #4d5870; line-height: 1.8; background: #f7f5ff; }
+        .profile { display: grid; gap: 14px; margin-top: 22px; }
+        .profile-item { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+        .profile-item span { color: var(--muted); }
+        footer { padding: 0 0 30px; text-align: center; color: var(--muted); font-size: 13px; }
+        @media (max-width: 760px) {
+            .wrap { width: min(100% - 24px, 600px); }
+            header { padding: 46px 0 32px; }
+            main { grid-template-columns: 1fr; }
+            .links { grid-template-columns: 1fr; }
+            .panel { padding: 23px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <span class="eyebrow">CLASSROOM PRACTICE · 2026</span>
+            <h1>高级网页设计</h1>
+            <p class="subtitle">312 张轩铭的课堂实践作品集</p>
+        </header>
+        <main>
+            <section class="panel">
+                <h2>实践页面导航</h2>
+                <p class="hint">点击卡片查看各章节 HTML 实践页面</p>
+                <div class="links">
+                    <a class="link-card" href="1.html"><span class="number">01</span><span><strong>HTML 基础元素</strong><small>标签、文本与页面结构</small></span></a>
+                    <a class="link-card" href="2-1.html"><span class="number">02</span><span><strong>超链接与图像</strong><small>链接、图片和表格实践</small></span></a>
+                    <a class="link-card" href="2-2.html"><span class="number">03</span><span><strong>表单设计</strong><small>输入控件与表单结构</small></span></a>
+                    <a class="link-card" href="3-1.html"><span class="number">04</span><span><strong>CSS 选择器</strong><small>标签、类与 ID 选择器</small></span></a>
+                    <a class="link-card" href="3-2.html"><span class="number">05</span><span><strong>页面样式实践</strong><small>CSS 属性与布局练习</small></span></a>
+                    <a class="link-card" href="4-1.html"><span class="number">06</span><span><strong>CSS 进阶选择器</strong><small>群组选择器和后代选择器</small></span></a>
+                    <a class="link-card" href="5-1.html"><span class="number">07</span><span><strong>页面布局实践</strong><small>网页布局与样式设计</small></span></a>
+                    <a class="link-card" href="5-2.html"><span class="number">08</span><span><strong>综合页面实践</strong><small>HTML 与 CSS 综合练习</small></span></a>
+                    <a class="link-card" href="6-1.html"><span class="number">09</span><span><strong>网页交互实践</strong><small>页面结构与交互效果</small></span></a>
+                    <a class="link-card" href="6-2.html"><span class="number">10</span><span><strong>综合网页设计</strong><small>页面布局综合练习</small></span></a>
+                    <a class="link-card" href="7-1.html"><span class="number">11</span><span><strong>网页设计实践</strong><small>综合页面制作</small></span></a>
+                    <a class="link-card" href="7-2左图右文.html"><span class="number">12</span><span><strong>左图右文页面</strong><small>图文布局设计实践</small></span></a>
+                </div>
+            </section>
+            <aside class="panel">
+                <h2>作品信息</h2>
+                <p class="hint">用原生 HTML 与 CSS 构建</p>
+                <div class="profile">
+                    <div class="profile-item"><span>学号</span><strong>312</strong></div>
+                    <div class="profile-item"><span>姓名</span><strong>张轩铭</strong></div>
+                    <div class="profile-item"><span>课程</span><strong>高级网页设计</strong></div>
+                    <div class="profile-item"><span>页面技术</span><strong>HTML · CSS</strong></div>
+                </div>
+                <h2 style="margin-top: 30px;">本次提示词</h2>
+                <p class="prompt">“创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用cdn，新页面名称为index.html，主题为312 张轩铭的《高级网页设计》课堂实践，美化页面，页面中包括本提示词。”</p>
+            </aside>
+        </main>
+        <footer>312 张轩铭 · 《高级网页设计》课堂实践</footer>
+    </div>
+</body>
+</html>

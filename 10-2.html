@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幻灯点 · 上图下文</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf7 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    /* 幻灯点容器 */
+    .slider {
+        width: 420px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 51, 153, 0.18);
+        overflow: hidden;
+    }
+
+    /* 图片区（上） */
+    .stage {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        background: #039;
+    }
+
+    .slides {
+        display: flex;
+        width: 400%;
+        height: 100%;
+        animation: slide 12s infinite;
+    }
+    .slide {
+        flex: 0 0 25%;
+        height: 100%;
+    }
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* 每张图停留约 3 秒，通过横向位移切换 */
+    @keyframes slide {
+        0%, 20.833% { transform: translateX(0); }
+        25%, 45.833% { transform: translateX(-25%); }
+        50%, 70.833% { transform: translateX(-50%); }
+        75%, 100% { transform: translateX(-75%); }
+    }
+
+    /* 文字区（下） */
+    .caption {
+        padding: 22px 24px 26px;
+        text-align: center;
+    }
+    .caption h2 {
+        display: inline-block;
+        background-color: #039;
+        color: #fff;
+        border-radius: 5px;
+        padding: 6px 18px;
+        font-size: 22px;
+        letter-spacing: 3px;
+        margin-bottom: 12px;
+    }
+    .caption p {
+        color: green;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    /* 圆点指示器 */
+    .dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 16px;
+    }
+    .dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #c9d4e6;
+        animation: dot 12s infinite;
+    }
+    .dots span:nth-child(1) { animation-name: dot-first; }
+    .dots span:nth-child(2) { animation-name: dot-second; }
+    .dots span:nth-child(3) { animation-name: dot-third; }
+
+    @keyframes dot-first {
+        0%, 24.99%, 75%, 100% { background: #039; transform: scale(1.25); }
+        25%, 74.99% { background: #c9d4e6; transform: scale(1); }
+    }
+    @keyframes dot-second {
+        0%, 24.99%, 50%, 100% { background: #c9d4e6; transform: scale(1); }
+        25%, 49.99% { background: #039; transform: scale(1.25); }
+    }
+    @keyframes dot-third {
+        0%, 49.99%, 75%, 100% { background: #c9d4e6; transform: scale(1); }
+        50%, 74.99% { background: #039; transform: scale(1.25); }
+    }
+</style>
+</head>
+<body>
+    <div class="slider">
+        <div class="stage">
+            <div class="slides">
+                <div class="slide"><img src="images/1.jpg" alt="幻灯片1"></div>
+                <div class="slide"><img src="images/2.jpg" alt="幻灯片2"></div>
+                <div class="slide"><img src="images/3.jpg" alt="幻灯片3"></div>
+                <div class="slide"><img src="images/1.jpg" alt="" aria-hidden="true"></div>
+            </div>
+        </div>
+        <div class="caption">
+            <h2>张轩铭</h2>
+            <p>上图下文 · CSS 动画幻灯点<br>三张图片自动轮播展示</p>
+            <div class="dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

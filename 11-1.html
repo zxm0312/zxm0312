@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web前端长度单位展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .demo {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        /* px 单位演示 */
+        .px-box {
+            width: 150px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* em 单位演示 */
+        .em-parent {
+            font-size: 16px;
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .em-child {
+            font-size: 2em;
+            color: #2d3436;
+            background: #74b9ff;
+            padding: 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* rem 单位演示 */
+        .rem-parent {
+            font-size: 14px;
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .rem-child {
+            font-size: 2rem;
+            color: #2d3436;
+            background: #55efc4;
+            padding: 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* vw/vh 单位演示 */
+        .vw-vh-box {
+            width: 30vw;
+            height: 8vh;
+            min-width: 150px;
+            min-height: 50px;
+            background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* % 单位演示 */
+        .percent-parent {
+            width: 100%;
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .percent-child {
+            width: 70%;
+            height: 50px;
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* pt 单位演示 */
+        .pt-box {
+            font-size: 18pt;
+            color: #2d3436;
+            background: #ffeaa7;
+            padding: 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* cm/mm 单位演示 */
+        .cm-mm-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cm-box {
+            width: 3cm;
+            height: 1.5cm;
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .mm-box {
+            width: 50mm;
+            height: 10mm;
+            background: linear-gradient(45deg, #0984e3, #74b9ff);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* ex/ch 单位演示 */
+        .ex-ch-demo {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .ex-text {
+            font-size: 16px;
+            color: #2d3436;
+        }
+
+        .ex-text span {
+            background: #fdcb6e;
+            padding: 2px 8px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .ch-text {
+            font-size: 16px;
+            color: #2d3436;
+            margin-top: 10px;
+        }
+
+        .ch-text span {
+            background: #e17055;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* 单位对比表 */
+        .unit-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .unit-table th,
+        .unit-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .unit-table th {
+            background: #764ba2;
+            color: #fff;
+        }
+
+        .unit-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .unit-table tr:hover {
+            background: #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Web前端长度单位展示</h1>
+
+    <div class="container">
+        <!-- px 单位 -->
+        <div class="card">
+            <h2>1. px（像素）</h2>
+            <p>绝对单位，屏幕上显示的物理像素点。最常用的长度单位，不受其他元素影响。</p>
+            <div class="demo">
+                <div class="demo-label">width: 150px; height: 60px;</div>
+                <div class="px-box">150 × 60 px</div>
+            </div>
+        </div>
+
+        <!-- em 单位 -->
+        <div class="card">
+            <h2>2. em</h2>
+            <p>相对单位，相对于父元素的字体大小。如果父元素是16px，则1em = 16px。嵌套使用时会累积。</p>
+            <div class="demo">
+                <div class="demo-label">父元素 font-size: 16px，子元素 font-size: 2em = 32px</div>
+                <div class="em-parent">
+                    父元素 (16px)
+                    <div class="em-child">子元素 (2em)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- rem 单位 -->
+        <div class="card">
+            <h2>3. rem（root em）</h2>
+            <p>相对单位，相对于根元素（html）的字体大小。不受父元素影响，更易控制。</p>
+            <div class="demo">
+                <div class="demo-label">html font-size: 16px，子元素 font-size: 2rem = 32px</div>
+                <div class="rem-parent">
+                    父元素 (14px)
+                    <div class="rem-child">子元素 (2rem)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- vw/vh 单位 -->
+        <div class="card">
+            <h2>4. vw / vh（视口单位）</h2>
+            <p>vw = 视口宽度的1%，vh = 视口高度的1%。常用于响应式布局，随窗口大小变化。</p>
+            <div class="demo">
+                <div class="demo-label">width: 30vw; height: 8vh;</div>
+                <div class="vw-vh-box">30vw × 8vh</div>
+            </div>
+        </div>
+
+        <!-- % 单位 -->
+        <div class="card">
+            <h2>5. %（百分比）</h2>
+            <p>相对单位，相对于父元素的对应属性值。常用于流式布局和响应式设计。</p>
+            <div class="demo">
+                <div class="demo-label">width: 70%（父元素宽度的70%）</div>
+                <div class="percent-parent">
+                    <div class="percent-child">70%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- pt 单位 -->
+        <div class="card">
+            <h2>6. pt（磅）</h2>
+            <p>绝对单位，主要用于打印样式。1pt = 1/72英寸，屏幕上通常 1pt ≈ 1.33px。</p>
+            <div class="demo">
+                <div class="demo-label">font-size: 18pt;</div>
+                <div class="pt-box">字体大小 18pt</div>
+            </div>
+        </div>
+
+        <!-- cm/mm 单位 -->
+        <div class="card">
+            <h2>7. cm / mm（厘米/毫米）</h2>
+            <p>绝对物理单位，主要用于打印样式表。屏幕上显示效果因设备而异。</p>
+            <div class="demo">
+                <div class="cm-mm-demo">
+                    <div class="cm-box">width: 3cm; height: 1.5cm</div>
+                    <div class="mm-box">width: 50mm; height: 10mm</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ex/ch 单位 -->
+        <div class="card">
+            <h2>8. ex / ch</h2>
+            <p><strong>ex</strong>：相对于字体的小写高度（x-height）。<br>
+               <strong>ch</strong>：相对于数字"0"的宽度。</p>
+            <div class="demo">
+                <div class="ex-ch-demo">
+                    <div class="ex-text">1ex 高度: <span style="height: 1ex; line-height: 1ex;">x</span></div>
+                    <div class="ch-text">1ch 宽度: <span style="width: 1ch;">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 单位对比表 -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>单位对比总结</h2>
+            <table class="unit-table">
+                <thead>
+                    <tr>
+                        <th>单位</th>
+                        <th>类型</th>
+                        <th>参照基准</th>
+                        <th>常见用途</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>px</strong></td>
+                        <td>绝对单位</td>
+                        <td>物理像素</td>
+                        <td>边框、阴影、精确布局</td>
+                    </tr>
+                    <tr>
+                        <td><strong>em</strong></td>
+                        <td>相对单位</td>
+                        <td>父元素字体大小</td>
+                        <td>组件内部缩放、段落间距</td>
+                    </tr>
+                    <tr>
+                        <td><strong>rem</strong></td>
+                        <td>相对单位</td>
+                        <td>根元素字体大小</td>
+                        <td>全局字体、间距控制</td>
+                    </tr>
+                    <tr>
+                        <td><strong>vw/vh</strong></td>
+                        <td>相对单位</td>
+                        <td>视口宽/高度</td>
+                        <td>响应式布局、全屏元素</td>
+                    </tr>
+                    <tr>
+                        <td><strong>%</strong></td>
+                        <td>相对单位</td>
+                        <td>父元素对应属性</td>
+                        <td>流式布局、宽度自适应</td>
+                    </tr>
+                    <tr>
+                        <td><strong>pt</strong></td>
+                        <td>绝对单位</td>
+                        <td>1/72 英寸</td>
+                        <td>打印样式</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cm/mm</strong></td>
+                        <td>绝对单位</td>
+                        <td>物理长度</td>
+                        <td>打印样式</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ex</strong></td>
+                        <td>相对单位</td>
+                        <td>字体 x-height</td>
+                        <td>精细排版</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ch</strong></td>
+                        <td>相对单位</td>
+                        <td>数字"0"宽度</td>
+                        <td>文本宽度控制</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

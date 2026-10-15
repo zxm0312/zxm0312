@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背景颜色动画</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            animation: color-change 4s infinite;
+        }
+
+        @keyframes color-change {
+            0%, 100% { background-color: #e74c3c; }
+            25% { background-color: #f1c40f; }
+            50% { background-color: #3498db; }
+            75% { background-color: #2ecc71; }
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+</body>
+</html>
