@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 变量 · 张轩铭</title>
+    <style>
+        /* ========== 在 :root 中定义全局 CSS 变量 ========== */
+        :root {
+            --primary: #2f6fed;
+            --secondary: #6e56cf;
+            --accent: #f59e0b;
+            --bg: #f4f7ff;
+            --surface: #ffffff;
+            --ink: #17233c;
+            --muted: #69758d;
+            --radius: 16px;
+            --gap: 20px;
+        }
+
+        /* ========== 备用主题：直接覆盖变量即可换肤 ========== */
+        body.theme-dark {
+            --primary: #60a5fa;
+            --secondary: #a78bfa;
+            --accent: #fbbf24;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --ink: #e2e8f0;
+            --muted: #94a3b8;
+        }
+
+        body.theme-warm {
+            --primary: #e11d48;
+            --secondary: #ea580c;
+            --accent: #16a34a;
+            --bg: #fff7ed;
+            --surface: #ffffff;
+            --ink: #431407;
+            --muted: #9a3412;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            /* 变量应用在样式中 */
+            background: var(--bg);
+            color: var(--ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            transition: background 0.4s ease, color 0.4s ease;
+            padding: 40px 20px;
+        }
+
+        .wrap {
+            width: min(960px, 100%);
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(28px, 5vw, 44px);
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        /* ========== 主题切换按钮 ========== */
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar button {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 999px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .toolbar button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.3);
+        }
+
+        /* ========== 变量展示卡片 ========== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: var(--gap);
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: 0 10px 28px rgba(23, 35, 60, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: background 0.4s ease, transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .swatch {
+            height: 64px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .swatch.primary { background: var(--primary); }
+        .swatch.secondary { background: var(--secondary); }
+        .swatch.accent { background: var(--accent); }
+        .swatch.bg { background: var(--bg); border: 1px dashed var(--muted); }
+
+        code {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            background: rgba(47, 111, 237, 0.1);
+            color: var(--primary);
+        }
+
+        /* ========== 演示区：同一套样式，变量不同结果不同 ========== */
+        .demo {
+            margin-top: 36px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 26px;
+            box-shadow: 0 10px 28px rgba(23, 35, 60, 0.08);
+        }
+
+        .demo h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .badge {
+            padding: 10px 20px;
+            border-radius: 999px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .badge.b1 { background: var(--primary); }
+        .badge.b2 { background: var(--secondary); }
+        .badge.b3 { background: var(--accent); }
+
+        .name-box {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: var(--radius);
+            font-size: 26px;
+            letter-spacing: 6px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 10px 24px rgba(47, 111, 237, 0.35);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>CSS 变量演示</h1>
+        <p class="sub">在 :root 中定义变量，通过 var() 引用；切换主题只需覆盖变量值</p>
+
+        <div class="toolbar">
+            <button onclick="document.body.className=''" style="background:linear-gradient(135deg,#2f6fed,#6e56cf)">默认主题</button>
+            <button onclick="document.body.className='theme-dark'" style="background:linear-gradient(135deg,#334155,#475569)">暗色主题</button>
+            <button onclick="document.body.className='theme-warm'" style="background:linear-gradient(135deg,#e11d48,#ea580c)">暖色主题</button>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>主色 --primary</h2>
+                <div class="swatch primary"></div>
+                <code>background: var(--primary)</code>
+            </div>
+            <div class="card">
+                <h2>辅色 --secondary</h2>
+                <div class="swatch secondary"></div>
+                <code>background: var(--secondary)</code>
+            </div>
+            <div class="card">
+                <h2>强调色 --accent</h2>
+                <div class="swatch accent"></div>
+                <code>background: var(--accent)</code>
+            </div>
+            <div class="card">
+                <h2>背景色 --bg</h2>
+                <div class="swatch bg"></div>
+                <code>background: var(--bg)</code>
+            </div>
+        </div>
+
+        <div class="demo">
+            <h2>变量的应用</h2>
+            <div class="badge-row">
+                <span class="badge b1">--primary</span>
+                <span class="badge b2">--secondary</span>
+                <span class="badge b3">--accent</span>
+            </div>
+            <div class="name-box">张轩铭</div>
+        </div>
+
+        <footer>312 张轩铭 · CSS 变量（Custom Properties）实践</footer>
+    </div>
+</body>
+</html>
