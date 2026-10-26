@@ -9,17 +9,28 @@ description: "提交项目到 GitHub——当用户要求'提交项目到 GitHub
 
 ## 远程仓库信息
 
-- SSH URL：`git@github.com:zxm0312/zxm0312.git`
+- SSH URL（端口 443，因为本机 22 端口被防火墙拦截）：`git@github.com:zxm0312/zxm0312.git`
+- 实际 SSH 连接目标：`ssh.github.com:443`（已在 `~/.ssh/config` 中配置 Host github.com 映射）
 - HTTPS URL（备用）：`https://github.com/zxm0312/zxm0312.git`
-- 建议 remote 名称：`github`（保留 origin 指向原 Gitee 仓库时）
-- 若只有 GitHub 一个远程，可直接覆盖 `origin`
+- 远程名称：`github`（保留 origin 指向 Gitee：`https://gitee.com/jiushun/zxm0312.git`）
+- **默认分支：`main`**（GitHub 新仓库默认 main；Gitee 默认 master，但也已推 main）
+- 本机 `.ssh/config` 关键条目：
+  ```
+  Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+  ```
 
 ## 前置条件
 
-- **SSH 公钥已配置**：运行 `ssh -T git@github.com` 测试连接
-- 若未配置，引导用户：
-  1. `ssh-keygen -t ed25519 -C "your_email@example.com"`
-  2. `cat ~/.ssh/id_ed25519.pub` → 复制到 GitHub Settings → SSH keys
+- **SSH 公钥已配置并添加到 GitHub**：`ssh -T git@github.com` 返回 "Hi zxm0312!"
+- 本项目特殊：本机 22 端口被拦，走 443 端口 → `.ssh/config` 已写好
+- 若公钥尚未添加到 GitHub：
+  1. `cat ~/.ssh/id_ed25519.pub` → 复制
+  2. GitHub → Settings → SSH and GPG keys → New SSH key → 粘贴保存
+- **默认分支是 `main`**（不是 `master`）。若远程只有 master 而无 main，GitHub 网页看起来像空仓库
 
 ## 执行步骤
 
