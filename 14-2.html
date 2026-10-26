@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 程序结构与循环 · 张轩铭</title>
+    <style>
+        :root {
+            --zhang_primary: #2f6fed;
+            --zhang_secondary: #6e56cf;
+            --zhang_accent: #f59e0b;
+            --zhang_ok: #16a34a;
+            --zhang_bg: #f4f7ff;
+            --zhang_surface: #ffffff;
+            --zhang_ink: #17233c;
+            --zhang_muted: #69758d;
+            --zhang_radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            padding: 40px 20px;
+            background:
+                radial-gradient(circle at 12% 10%, #dce9ff 0, transparent 30%),
+                radial-gradient(circle at 88% 14%, #e6ddff 0, transparent 28%),
+                linear-gradient(135deg, #f7faff, #eef2fb);
+            color: var(--zhang_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .zhang_wrap { width: min(1100px, 100%); margin: 0 auto; }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(26px, 5vw, 42px);
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+
+        .zhang_sub {
+            text-align: center;
+            color: var(--zhang_muted);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .zhang_section {
+            background: var(--zhang_surface);
+            border-radius: var(--zhang_radius);
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 28px rgba(23, 35, 60, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .zhang_section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            margin-bottom: 14px;
+            color: var(--zhang_primary);
+        }
+
+        .zhang_section h2 .zhang_tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            background: rgba(47, 111, 237, 0.1);
+            color: var(--zhang_primary);
+            font-weight: normal;
+        }
+
+        .zhang_section p {
+            color: var(--zhang_muted);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .zhang_code-block {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #e2e8f0;
+            overflow-x: auto;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .zhang_code-block code { white-space: pre; }
+
+        .zhang_run-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .zhang_btn {
+            cursor: pointer;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--zhang_primary), var(--zhang_secondary));
+            color: #fff;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .zhang_btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(47, 111, 237, 0.3);
+        }
+
+        .zhang_btn:active { transform: translateY(0); }
+
+        .zhang_output {
+            flex: 1;
+            min-height: 42px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12.5px;
+            color: #334155;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .zhang_output.has-content { background: #ecfdf5; border-color: #86efac; }
+
+        .zhang_grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .zhang_kbd {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-bottom-width: 2px;
+            font-family: "Consolas", monospace;
+            font-size: 12px;
+            color: var(--zhang_primary);
+        }
+
+        .zhang_program-structure {
+            display: grid;
+            grid-template-columns: auto 1fr auto 1fr;
+            gap: 8px 14px;
+            align-items: start;
+            padding: 18px;
+            background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        .zhang_program-structure .zhang_step {
+            padding: 6px 10px;
+            background: #fff;
+            border-radius: 6px;
+            border-left: 3px solid var(--zhang_primary);
+        }
+
+        .zhang_program-structure .zhang_step-num {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--zhang_primary), var(--zhang_secondary));
+            color: #fff;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .zhang_program-structure .zhang_arrow {
+            text-align: center;
+            color: var(--zhang_primary);
+            font-size: 20px;
+            padding-top: 2px;
+        }
+
+        .zhang_footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--zhang_muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .zhang_grid-2 { grid-template-columns: 1fr; }
+            .zhang_program-structure { grid-template-columns: auto 1fr; }
+            .zhang_program-structure .zhang_arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="zhang_wrap">
+        <h1>JavaScript 程序结构与循环</h1>
+        <p class="zhang_sub">312 张轩铭 · 点击每个板块的「运行」按钮，查看代码实际执行结果</p>
+
+        <!-- ============ 第一部分：程序基本结构 ============ -->
+        <section class="zhang_section">
+            <h2>① JS 程序的基本结构 <span class="zhang_tag">Program Structure</span></h2>
+            <p>一段完整的 JavaScript 程序通常由以下步骤串联：</p>
+
+            <div class="zhang_program-structure">
+                <div class="zhang_step-num">1</div>
+                <div class="zhang_step"><b>声明变量</b> — 用 <span class="zhang_kbd">let</span> / <span class="zhang_kbd">const</span> / <span class="zhang_kbd">var</span> 保存数据</div>
+                <div class="zhang_arrow">→</div>
+                <div class="zhang_step"><b>表达式计算</b> — 对数据做运算 / 调用方法</div>
+
+                <div class="zhang_step-num">2</div>
+                <div class="zhang_step"><b>控制流程</b> — <span class="zhang_kbd">if</span> / <span class="zhang_kbd">switch</span> 决定走向，<span class="zhang_kbd">for</span> / <span class="zhang_kbd">while</span> 重复执行</div>
+                <div class="zhang_arrow">→</div>
+                <div class="zhang_step"><b>函数封装</b> — 把可复用逻辑写成函数</div>
+
+                <div class="zhang_step-num">3</div>
+                <div class="zhang_step"><b>输出结果</b> — <span class="zhang_kbd">console.log</span> / 操作 DOM</div>
+                <div class="zhang_arrow">→</div>
+                <div class="zhang_step"><b>结束</b></div>
+            </div>
+
+            <div class="zhang_code-block"><code>// 步骤 1：声明变量
+const zhang_name = "张轩铭";
+let zhang_score = 0;
+
+// 步骤 2：运算
+zhang_score += 95;
+
+// 步骤 3：分支 + 输出
+if (zhang_score >= 60) {
+    console.log(zhang_name + " 及格！分数：" + zhang_score);
+} else {
+    console.log(zhang_name + " 继续加油！");
+}</code></div>
+            <div class="zhang_run-row">
+                <button class="zhang_btn" onclick="zhang_runDemo('struct')">▶ 运行</button>
+                <div class="zhang_output" id="zhang_out-struct">(点击运行查看结果)</div>
+            </div>
+        </section>
+
+        <!-- ============ 第二部分：循环 ============ -->
+        <section class="zhang_section">
+            <h2>② 循环 <span class="zhang_tag">Loops</span></h2>
+            <p>循环让一段代码重复执行。JavaScript 提供 <b>for</b>、<b>while</b>、<b>do…while</b>、<b>for…of</b>、<b>for…in</b> 等几种循环结构。</p>
+
+            <div class="zhang_grid-2">
+
+                <!-- for 循环 -->
+                <div>
+                    <h3 style="color:var(--zhang_secondary);margin-bottom:10px;font-size:16px;">🔁 for 循环（C 风格）</h3>
+                    <p>最经典的计数循环：<span class="zhang_kbd">for(初始化; 条件; 更新)</span></p>
+                    <div class="zhang_code-block"><code>// 打印 1 ~ 5
+let zhang_result = "";
+for (let i = 1; i <= 5; i++) {
+    zhang_result += i + " ";
+}
+console.log(zhang_result);</code></div>
+                    <div class="zhang_run-row">
+                        <button class="zhang_btn" onclick="zhang_runDemo('for')">▶ 运行</button>
+                        <div class="zhang_output" id="zhang_out-for"></div>
+                    </div>
+                </div>
+
+                <!-- while 循环 -->
+                <div>
+                    <h3 style="color:var(--zhang_secondary);margin-bottom:10px;font-size:16px;">🔁 while 循环</h3>
+                    <p>先判断条件，再执行循环体。条件为假时直接跳过。</p>
+                    <div class="zhang_code-block"><code>// 累加 1+2+3+...+10
+let zhang_sum = 0;
+let zhang_i = 1;
+while (zhang_i <= 10) {
+    zhang_sum += zhang_i;
+    zhang_i++;
+}
+console.log("1~10 的和 = " + zhang_sum);</code></div>
+                    <div class="zhang_run-row">
+                        <button class="zhang_btn" onclick="zhang_runDemo('while')">▶ 运行</button>
+                        <div class="zhang_output" id="zhang_out-while"></div>
+                    </div>
+                </div>
+
+                <!-- do-while 循环 -->
+                <div>
+                    <h3 style="color:var(--zhang_secondary);margin-bottom:10px;font-size:16px;">🔁 do…while 循环</h3>
+                    <p>先执行一次循环体，再判断条件 → <b>至少执行一次</b>。</p>
+                    <div class="zhang_code-block"><code>// 即使条件一开始为 false，也会跑一次
+let zhang_count = 0;
+do {
+    zhang_count++;
+} while (zhang_count < 3);
+console.log("循环执行了 " + zhang_count + " 次");</code></div>
+                    <div class="zhang_run-row">
+                        <button class="zhang_btn" onclick="zhang_runDemo('dowhile')">▶ 运行</button>
+                        <div class="zhang_output" id="zhang_out-dowhile"></div>
+                    </div>
+                </div>
+
+                <!-- for...of 循环 -->
+                <div>
+                    <h3 style="color:var(--zhang_secondary);margin-bottom:10px;font-size:16px;">🔁 for…of 循环</h3>
+                    <p>现代 JS 推荐！遍历数组、字符串等<b>可迭代对象</b>的元素值。</p>
+                    <div class="zhang_code-block"><code>const zhang_fruits = ["🍎", "🍌", "🍇", "🍊"];
+let zhang_line = "";
+for (const fruit of zhang_fruits) {
+    zhang_line += fruit + " ";
+}
+console.log("水果：" + zhang_line);
+
+// 也可遍历字符串
+let zhang_name = "";
+for (const ch of "张轩铭") {
+    zhang_name += ch + "·";
+}
+console.log("姓名：" + zhang_name);</code></div>
+                    <div class="zhang_run-row">
+                        <button class="zhang_btn" onclick="zhang_runDemo('forof')">▶ 运行</button>
+                        <div class="zhang_output" id="zhang_out-forof"></div>
+                    </div>
+                </div>
+
+                <!-- for...in 循环 -->
+                <div>
+                    <h3 style="color:var(--zhang_secondary);margin-bottom:10px;font-size:16px;">🔁 for…in 循环</h3>
+                    <p>遍历对象的<b>键名</b>（包括原型链上的可枚举属性），常用于对象。</p>
+                    <div class="zhang_code-block"><code>const zhang_student = {
+    name: "张轩铭",
+    age: 21,
+    grade: "312"
+};
+for (const key in zhang_student) {
+    if (Object.prototype.hasOwnProperty.call(zhang_student, key)) {
+        console.log(key + ": " + zhang_student[key]);
+    }
+}</code></div>
+                    <div class="zhang_run-row">
+                        <button class="zhang_btn" onclick="zhang_runDemo('forin')">▶ 运行</button>
+                        <div class="zhang_output" id="zhang_out-forin"></div>
+                    </div>
+                </div>
+
+                <!-- break / continue -->
+                <div>
+                    <h3 style="color:var(--zhang_secondary);margin-bottom:10px;font-size:16px;">🔁 break & continue</h3>
+                    <p><span class="zhang_kbd">break</span> 立即跳出循环；<span class="zhang_kbd">continue</span> 跳过本轮，继续下一轮。</p>
+                    <div class="zhang_code-block"><code>// break：找到第一个大于 3 的数就停
+let zhang_a = 0;
+for (let i = 1; i <= 10; i++) {
+    if (i > 3) { zhang_a = i; break; }
+}
+console.log("break 结果：" + zhang_a);
+
+// continue：跳过偶数，只打印奇数
+let zhang_b = "";
+for (let i = 1; i <= 6; i++) {
+    if (i % 2 === 0) continue;
+    zhang_b += i + " ";
+}
+console.log("continue 结果：" + zhang_b);</code></div>
+                    <div class="zhang_run-row">
+                        <button class="zhang_btn" onclick="zhang_runDemo('breakcont')">▶ 运行</button>
+                        <div class="zhang_output" id="zhang_out-breakcont"></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="zhang_footer">312 张轩铭 · JavaScript 程序结构与循环实践</footer>
+    </div>
+
+    <script>
+        // 所有 JS 变量 / 函数均以 zhang_ 开头
+        // 为每个 demo 构造一个捕获 console.log 的沙盒运行器
+        function zh_captureLog(demoFn) {
+            var zhang_lines = [];
+            var zhang_oldLog = console.log;
+            console.log = function () {
+                var zhang_args = Array.prototype.slice.call(arguments);
+                zhang_lines.push(zhang_args.map(function (v) {
+                    if (typeof v === "object") {
+                        try { return JSON.stringify(v); } catch (e) { return String(v); }
+                    }
+                    return String(v);
+                }).join(" "));
+            };
+            try {
+                demoFn();
+            } catch (e) {
+                zhang_lines.push("❌ 错误: " + e.message);
+            } finally {
+                console.log = zhang_oldLog;
+            }
+            return zhang_lines.join("\n");
+        }
+
+        function zh_showResult(id, text) {
+            var zhang_el = document.getElementById("zhang_out-" + id);
+            zhang_el.textContent = text || "(无输出)";
+            zhang_el.classList.add("has-content");
+        }
+
+        function zhang_runDemo(id) {
+            var zh_codeMap = {
+                "struct": function () {
+                    var zhang_name = "张轩铭";
+                    var zhang_score = 0;
+                    zhang_score += 95;
+                    if (zhang_score >= 60) {
+                        console.log(zhang_name + " 及格！分数：" + zhang_score);
+                    } else {
+                        console.log(zhang_name + " 继续加油！");
+                    }
+                },
+                "for": function () {
+                    var zhang_result = "";
+                    for (var i = 1; i <= 5; i++) {
+                        zhang_result += i + " ";
+                    }
+                    console.log(zhang_result);
+                },
+                "while": function () {
+                    var zhang_sum = 0;
+                    var zhang_i = 1;
+                    while (zhang_i <= 10) {
+                        zhang_sum += zhang_i;
+                        zhang_i++;
+                    }
+                    console.log("1~10 的和 = " + zhang_sum);
+                },
+                "dowhile": function () {
+                    var zhang_count = 0;
+                    do {
+                        zhang_count++;
+                    } while (zhang_count < 3);
+                    console.log("循环执行了 " + zhang_count + " 次");
+                },
+                "forof": function () {
+                    var zhang_fruits = ["🍎", "🍌", "🍇", "🍊"];
+                    var zhang_line = "";
+                    for (var fruit of zhang_fruits) {
+                        zhang_line += fruit + " ";
+                    }
+                    console.log("水果：" + zhang_line);
+                    var zhang_name = "";
+                    for (var ch of "张轩铭") {
+                        zhang_name += ch + "·";
+                    }
+                    console.log("姓名：" + zhang_name);
+                },
+                "forin": function () {
+                    var zhang_student = { name: "张轩铭", age: 21, grade: "312" };
+                    for (var key in zhang_student) {
+                        if (Object.prototype.hasOwnProperty.call(zhang_student, key)) {
+                            console.log(key + ": " + zhang_student[key]);
+                        }
+                    }
+                },
+                "breakcont": function () {
+                    var zhang_a = 0;
+                    for (var i = 1; i <= 10; i++) {
+                        if (i > 3) { zhang_a = i; break; }
+                    }
+                    console.log("break 结果：" + zhang_a);
+                    var zhang_b = "";
+                    for (var i = 1; i <= 6; i++) {
+                        if (i % 2 === 0) continue;
+                        zhang_b += i + " ";
+                    }
+                    console.log("continue 结果：" + zhang_b);
+                }
+            };
+
+            if (zh_codeMap[id]) {
+                var zhang_out = zh_captureLog(zh_codeMap[id]);
+                zh_showResult(id, zhang_out);
+            }
+        }
+    </script>
+</body>
+</html>
