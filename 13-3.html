@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AI文本清理 · 字体图标底部导航 · 张轩铭</title>
+    <!-- 字体图标方式：引入 font 目录下的 iconfont 字体 CSS -->
+    <link rel="stylesheet" href="font/iconfont.css">
+    <style>
+        :root {
+            --zhang_primary: #2f6fed;
+            --zhang_secondary: #6e56cf;
+            --zhang_accent: #f59e0b;
+            --zhang_bg: #f4f7ff;
+            --zhang_surface: #ffffff;
+            --zhang_ink: #17233c;
+            --zhang_muted: #94a3b8;
+            --zhang_tabbar-h: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            /* 为固定底栏预留高度，内容不被遮挡 */
+            padding-bottom: calc(var(--zhang_tabbar-h) + env(safe-area-inset-bottom, 0px));
+            background: var(--zhang_bg);
+            color: var(--zhang_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        /* ========== 顶部标题栏：全屏宽度 ========== */
+        .zhang_appbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: 100%;
+            padding: 16px 20px 14px;
+            background: linear-gradient(135deg, var(--zhang_primary), var(--zhang_secondary));
+            color: #fff;
+        }
+
+        .zhang_appbar h1 {
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+
+        .zhang_appbar p {
+            margin-top: 4px;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        /* ========== 主体内容：自适应宽度 ========== */
+        .zhang_main {
+            width: 100%;
+            padding: 16px;
+        }
+
+        .zhang_card {
+            width: 100%;
+            margin-bottom: 14px;
+            padding: 18px;
+            border-radius: 14px;
+            background: var(--zhang_surface);
+            box-shadow: 0 8px 22px rgba(23, 35, 60, 0.07);
+        }
+
+        .zhang_card h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .zhang_card h2 .iconfont {
+            font-size: 18px;
+            color: var(--zhang_primary);
+        }
+
+        .zhang_raw {
+            padding: 12px;
+            border-radius: 10px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .zhang_clean {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #f0fdf4;
+            color: #15803d;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .zhang_tag {
+            display: inline-block;
+            margin-bottom: 6px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .zhang_tag.zhang_before { background: #fee2e2; color: #b91c1c; }
+        .zhang_tag.zhang_after { background: #dcfce7; color: #15803d; }
+
+        .zhang_fns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .zhang_fn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 4px;
+            border-radius: 12px;
+            background: #f8faff;
+            font-size: 12px;
+            color: var(--zhang_muted);
+        }
+
+        .zhang_fn .iconfont {
+            font-size: 22px;
+            color: var(--zhang_primary);
+        }
+
+        .zhang_log {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e5eaf3;
+            font-size: 13px;
+        }
+
+        .zhang_log:last-child { border-bottom: none; }
+
+        .zhang_log small { color: var(--zhang_muted); }
+        .zhang_log b { color: #16a34a; font-weight: normal; }
+
+        /* ========== 固定底部导航：全屏宽度、自适应等分 ========== */
+        .zhang_tabbar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            display: flex;
+            width: 100%;
+            height: calc(var(--zhang_tabbar-h) + env(safe-area-inset-bottom, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            background: var(--zhang_surface);
+            border-top: 1px solid #e8ecf4;
+            box-shadow: 0 -6px 20px rgba(23, 35, 60, 0.08);
+        }
+
+        /* 每项 flex:1 等分，宽度随屏幕自适应 */
+        .zhang_tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--zhang_muted);
+            font-size: 11px;
+            font-family: inherit;
+            transition: color 0.2s ease;
+        }
+
+        .zhang_tab.zhang_active {
+            color: var(--zhang_primary);
+        }
+
+        /* 图标容器：为徽章/红点提供定位基准 */
+        .zhang_tab-icowrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+        }
+
+        .zhang_tab-icowrap .iconfont {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        /* 数字徽章：图标右上角 */
+        .zhang_badge {
+            position: absolute;
+            top: -6px;
+            right: -14px;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            border-radius: 999px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-style: normal;
+            line-height: 16px;
+            text-align: center;
+            border: 1.5px solid #fff;
+            box-sizing: border-box;
+        }
+
+        /* 红色圆点：图标右上角（无数字） */
+        .zhang_dot {
+            position: absolute;
+            top: -1px;
+            right: -5px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #ef4444;
+            border: 1.5px solid #fff;
+            box-sizing: border-box;
+        }
+
+        .zhang_tip {
+            width: 100%;
+            padding: 10px 16px 18px;
+            text-align: center;
+            color: var(--zhang_muted);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部 -->
+    <header class="zhang_appbar">
+        <h1>AI文本清理</h1>
+        <p>智能纠错 · 去除冗余 · 一键润色（字体图标版）</p>
+    </header>
+
+    <!-- 滚动内容区 -->
+    <main class="zhang_main">
+        <section class="zhang_card">
+            <h2><span class="iconfont icon-queren-"></span> 清理示例</h2>
+            <span class="zhang_tag zhang_before">清理前</span>
+            <div class="zhang_raw">这个这个方案我觉得的可能大概也许不太行，然后然后我们需要要重新修改一一下，嗯嗯。。。</div>
+            <span class="zhang_tag zhang-after zhang_after">清理后</span>
+            <div class="zhang_clean">该方案可行性不足，需要重新修改。</div>
+        </section>
+
+        <section class="zhang_card">
+            <h2><span class="iconfont icon-bianjishuru"></span> 清理能力</h2>
+            <div class="zhang_fns">
+                <div class="zhang_fn"><span class="iconfont icon-sousuo"></span>错别字</div>
+                <div class="zhang_fn"><span class="iconfont icon-zhongzhi"></span>去冗余</div>
+                <div class="zhang_fn"><span class="iconfont icon-langdu"></span>顺语句</div>
+                <div class="zhang_fn"><span class="iconfont icon-fuzhi"></span>一键复制</div>
+            </div>
+        </section>
+
+        <section class="zhang_card">
+            <h2><span class="iconfont icon-wenjian"></span> 最近清理</h2>
+            <div class="zhang_log"><span>会议纪要 · 第3期</span><span><b>已清理</b> · <small>10:24</small></span></div>
+            <div class="zhang_log"><span>产品需求草稿</span><span><b>已清理</b> · <small>09:51</small></span></div>
+            <div class="zhang_log"><span>客服话术模板</span><span><b>已清理</b> · <small>昨天</small></span></div>
+        </section>
+
+        <section class="zhang_card">
+            <h2><span class="iconfont icon-dianzan"></span> 每日一贴</h2>
+            <p style="font-size:13px;color:#64748b;line-height:1.8;">
+                清理前先选中场景（公文 / 口语 / 社交媒体），AI 会按对应语体保留语气词密度，避免"过度清洗"。
+            </p>
+        </section>
+
+        <p class="zhang_tip">向上滚动页面，观察底部导航始终固定在屏幕底部</p>
+    </main>
+
+    <!-- 固定底部导航：5 项，含数字徽章与右上角红点 -->
+    <nav class="zhang_tabbar">
+        <button class="zhang_tab zhang_active" type="button">
+            <span class="zhang_tab-icowrap">
+                <span class="iconfont icon-shouye"></span>
+                <i class="zhang_badge">3</i>
+            </span>
+            <span>首页</span>
+        </button>
+        <button class="zhang_tab" type="button">
+            <span class="zhang_tab-icowrap">
+                <span class="iconfont icon-shoucang"></span>
+                <i class="zhang_dot"></i>
+            </span>
+            <span>收藏</span>
+        </button>
+        <button class="zhang_tab" type="button">
+            <span class="zhang_tab-icowrap">
+                <span class="iconfont icon-jixu"></span>
+                <i class="zhang_badge">12</i>
+            </span>
+            <span>清理</span>
+        </button>
+        <button class="zhang_tab" type="button">
+            <span class="zhang_tab-icowrap">
+                <span class="iconfont icon-wenjian"></span>
+                <i class="zhang_badge">99+</i>
+            </span>
+            <span>记录</span>
+        </button>
+        <button class="zhang_tab" type="button">
+            <span class="zhang_tab-icowrap">
+                <span class="iconfont icon-dengluyonghu"></span>
+                <i class="zhang_dot"></i>
+            </span>
+            <span>我的</span>
+        </button>
+    </nav>
+
+    <script>
+        // 底部导航切换高亮
+        var tabs = document.querySelectorAll('.zhang_tab');
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                tabs.forEach(function (t) { t.classList.remove('zhang_active'); });
+                tab.classList.add('zhang_active');
+            });
+        });
+    </script>
+</body>
+</html>
