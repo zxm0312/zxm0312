@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17-5 JavaScript 定时器</title>
+    <style>
+        :root { --zhang_ink: #17233c; --zhang_muted: #64748b; --zhang_primary: #6d28d9; --zhang_line: #e2e8f0; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; padding: 28px 16px; color: var(--zhang_ink); font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: linear-gradient(135deg, #f5f3ff, #eff6ff); }
+        .zhang_container { width: min(1000px, 100%); margin: 0 auto; }
+        .zhang_header { text-align: center; margin-bottom: 25px; }
+        h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
+        .zhang_intro { margin: 0; color: var(--zhang_muted); line-height: 1.7; }
+        .zhang_cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; }
+        .zhang_card { padding: 24px; background: #fff; border: 1px solid var(--zhang_line); border-radius: 20px; box-shadow: 0 14px 35px rgba(30, 41, 59, .08); }
+        .zhang_card h2 { margin: 0 0 8px; font-size: 22px; }
+        .zhang_card p { color: var(--zhang_muted); line-height: 1.7; }
+        .zhang_display { display: grid; place-items: center; min-height: 130px; margin: 18px 0; border-radius: 16px; color: var(--zhang_primary); background: #f5f3ff; font-size: clamp(30px, 6vw, 48px); font-weight: 800; font-variant-numeric: tabular-nums; }
+        .zhang_actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .zhang_button { border: 0; border-radius: 10px; padding: 10px 16px; color: #fff; background: var(--zhang_primary); font: inherit; font-weight: 700; cursor: pointer; }
+        .zhang_button.zhang_secondary { color: var(--zhang_ink); background: #e2e8f0; }
+        .zhang_button:disabled { opacity: .55; cursor: not-allowed; }
+        .zhang_status { min-height: 24px; margin: 12px 0 0; color: var(--zhang_muted); }
+        .zhang_note { margin-top: 22px; padding: 15px 18px; border-left: 4px solid var(--zhang_primary); border-radius: 8px; color: var(--zhang_muted); background: #fff; line-height: 1.7; }
+    </style>
+</head>
+<body>
+    <main class="zhang_container">
+        <header class="zhang_header">
+            <h1>17-5 · JavaScript 两种定时器</h1>
+            <p class="zhang_intro">通过 setTimeout 延迟执行一次，通过 setInterval 按间隔重复执行。</p>
+        </header>
+        <section class="zhang_cards">
+            <article class="zhang_card">
+                <h2>setTimeout · 延时执行</h2>
+                <p>点击按钮后等待 3 秒，只执行一次。可以在执行前取消定时任务。</p>
+                <div id="zhang_timeoutDisplay" class="zhang_display">准备就绪</div>
+                <div class="zhang_actions">
+                    <button id="zhang_timeoutStart" class="zhang_button" type="button">3 秒后执行</button>
+                    <button id="zhang_timeoutCancel" class="zhang_button zhang_secondary" type="button" disabled>取消</button>
+                </div>
+                <p id="zhang_timeoutStatus" class="zhang_status" role="status" aria-live="polite">等待开始</p>
+            </article>
+            <article class="zhang_card">
+                <h2>setInterval · 间隔重复执行</h2>
+                <p>启动后每秒更新计数。点击停止按钮可清除重复定时任务。</p>
+                <div id="zhang_intervalDisplay" class="zhang_display">0 秒</div>
+                <div class="zhang_actions">
+                    <button id="zhang_intervalStart" class="zhang_button" type="button">开始计时</button>
+                    <button id="zhang_intervalStop" class="zhang_button zhang_secondary" type="button" disabled>停止</button>
+                    <button id="zhang_intervalReset" class="zhang_button zhang_secondary" type="button">重置</button>
+                </div>
+                <p id="zhang_intervalStatus" class="zhang_status" role="status" aria-live="polite">计时器尚未启动</p>
+            </article>
+        </section>
+        <p class="zhang_note">提示：定时器会返回一个 ID。使用 clearTimeout 和 clearInterval 可以分别取消对应的任务。</p>
+    </main>
+    <script>
+        let zhang_timeoutId = null;
+        let zhang_intervalId = null;
+        let zhang_intervalSeconds = 0;
+
+        const zhang_timeoutDisplay = document.getElementById("zhang_timeoutDisplay");
+        const zhang_timeoutStatus = document.getElementById("zhang_timeoutStatus");
+        const zhang_timeoutStart = document.getElementById("zhang_timeoutStart");
+        const zhang_timeoutCancel = document.getElementById("zhang_timeoutCancel");
+        const zhang_intervalDisplay = document.getElementById("zhang_intervalDisplay");
+        const zhang_intervalStatus = document.getElementById("zhang_intervalStatus");
+        const zhang_intervalStart = document.getElementById("zhang_intervalStart");
+        const zhang_intervalStop = document.getElementById("zhang_intervalStop");
+
+        function zhang_startTimeout() {
+            if (zhang_timeoutId !== null) return;
+            zhang_timeoutDisplay.textContent = "3 秒后执行";
+            zhang_timeoutStatus.textContent = "等待 setTimeout 执行…";
+            zhang_timeoutStart.disabled = true;
+            zhang_timeoutCancel.disabled = false;
+            zhang_timeoutId = setTimeout(() => {
+                zhang_timeoutId = null;
+                zhang_timeoutDisplay.textContent = "执行完成";
+                zhang_timeoutStatus.textContent = "回调函数已执行一次。";
+                zhang_timeoutStart.disabled = false;
+                zhang_timeoutCancel.disabled = true;
+            }, 3000);
+        }
+
+        function zhang_cancelTimeout() {
+            if (zhang_timeoutId !== null) clearTimeout(zhang_timeoutId);
+            zhang_timeoutId = null;
+            zhang_timeoutDisplay.textContent = "已取消";
+            zhang_timeoutStatus.textContent = "延时任务已取消，回调没有执行。";
+            zhang_timeoutStart.disabled = false;
+            zhang_timeoutCancel.disabled = true;
+        }
+
+        function zhang_startInterval() {
+            if (zhang_intervalId !== null) return;
+            zhang_intervalStatus.textContent = "每秒执行一次";
+            zhang_intervalStart.disabled = true;
+            zhang_intervalStop.disabled = false;
+            zhang_intervalId = setInterval(() => {
+                zhang_intervalSeconds += 1;
+                zhang_intervalDisplay.textContent = `${zhang_intervalSeconds} 秒`;
+            }, 1000);
+        }
+
+        function zhang_stopInterval() {
+            if (zhang_intervalId !== null) clearInterval(zhang_intervalId);
+            zhang_intervalId = null;
+            zhang_intervalStatus.textContent = "计时器已停止";
+            zhang_intervalStart.disabled = false;
+            zhang_intervalStop.disabled = true;
+        }
+
+        function zhang_resetInterval() {
+            zhang_stopInterval();
+            zhang_intervalSeconds = 0;
+            zhang_intervalDisplay.textContent = "0 秒";
+            zhang_intervalStatus.textContent = "计时器已重置";
+        }
+
+        zhang_timeoutStart.addEventListener("click", zhang_startTimeout);
+        zhang_timeoutCancel.addEventListener("click", zhang_cancelTimeout);
+        zhang_intervalStart.addEventListener("click", zhang_startInterval);
+        zhang_intervalStop.addEventListener("click", zhang_stopInterval);
+        document.getElementById("zhang_intervalReset").addEventListener("click", zhang_resetInterval);
+    </script>
+</body>
+</html>

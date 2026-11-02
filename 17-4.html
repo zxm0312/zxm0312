@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17-4 远程接口测试</title>
+    <style>
+        :root { --zhang_ink: #17233c; --zhang_muted: #64748b; --zhang_primary: #2563eb; --zhang_line: #dbe3f0; --zhang_surface: #fff; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; padding: 28px 16px; color: var(--zhang_ink); font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: linear-gradient(135deg, #eef4ff, #f8fafc); }
+        .zhang_container { width: min(1050px, 100%); margin: 0 auto; }
+        .zhang_header { margin-bottom: 20px; }
+        h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 40px); }
+        .zhang_intro { margin: 0; color: var(--zhang_muted); line-height: 1.7; }
+        .zhang_panel { padding: 22px; background: var(--zhang_surface); border: 1px solid var(--zhang_line); border-radius: 18px; box-shadow: 0 14px 35px rgba(30, 64, 120, .08); }
+        .zhang_form { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: start; }
+        .zhang_field { display: grid; gap: 7px; }
+        .zhang_field label { font-weight: 700; }
+        .zhang_field input, .zhang_field select, .zhang_field textarea { width: 100%; padding: 11px 12px; color: var(--zhang_ink); background: #fff; border: 1px solid var(--zhang_line); border-radius: 10px; font: inherit; }
+        .zhang_field textarea { min-height: 180px; resize: vertical; font-family: Consolas, monospace; line-height: 1.5; }
+        .zhang_wide { grid-column: 1 / -1; }
+        .zhang_hint { margin: -2px 0 0; color: var(--zhang_muted); font-size: 13px; }
+        .zhang_actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .zhang_button { border: 0; border-radius: 10px; padding: 11px 20px; color: #fff; background: var(--zhang_primary); font: inherit; font-weight: 700; cursor: pointer; }
+        .zhang_button:disabled { opacity: .6; cursor: wait; }
+        .zhang_status { min-height: 24px; color: var(--zhang_muted); }
+        .zhang_status[data-state="error"] { color: #b91c1c; }
+        .zhang_status[data-state="success"] { color: #15803d; }
+        .zhang_response { margin-top: 20px; }
+        .zhang_response h2 { margin: 0 0 10px; font-size: 20px; }
+        .zhang_response pre { min-height: 180px; max-height: 480px; overflow: auto; margin: 0; padding: 16px; color: #dbeafe; background: #0f172a; border-radius: 12px; white-space: pre-wrap; word-break: break-word; line-height: 1.6; }
+        @media (max-width: 650px) { .zhang_form { grid-template-columns: 1fr; } .zhang_wide { grid-column: auto; } .zhang_panel { padding: 17px; } }
+    </style>
+</head>
+<body>
+    <main class="zhang_container">
+        <header class="zhang_header">
+            <h1>17-4 · 远程接口测试</h1>
+            <p class="zhang_intro">选择 HTTP 请求方法并发送请求，查看服务器返回内容或明确的错误提示。POST 示例使用 JSONPlaceholder。</p>
+        </header>
+        <section class="zhang_panel">
+            <form id="zhang_requestForm" class="zhang_form">
+                <div class="zhang_field">
+                    <label for="zhang_method">请求方法</label>
+                    <select id="zhang_method" name="method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="PATCH">PATCH</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                <div class="zhang_field">
+                    <label for="zhang_url">接口地址</label>
+                    <input id="zhang_url" name="url" type="url" value="https://jsonplaceholder.typicode.com/posts" required>
+                </div>
+                <div id="zhang_bodyField" class="zhang_field zhang_wide">
+                    <label for="zhang_body">请求数据（JSON）</label>
+                    <textarea id="zhang_body" name="body" spellcheck="false">{
+  "title": "Fetch 测试",
+  "body": "这是通过原生 fetch 发送的 POST 请求。",
+  "userId": 1
+}</textarea>
+                    <p class="zhang_hint">POST、PUT、PATCH 请求会发送此 JSON 请求体；GET 和 DELETE 不发送请求体。</p>
+                </div>
+                <div class="zhang_actions zhang_wide">
+                    <button id="zhang_sendButton" class="zhang_button" type="submit">发送请求</button>
+                    <span id="zhang_status" class="zhang_status" role="status" aria-live="polite">等待发送请求</span>
+                </div>
+            </form>
+            <section class="zhang_response" aria-labelledby="zhang_responseTitle">
+                <h2 id="zhang_responseTitle">响应数据</h2>
+                <pre id="zhang_responseOutput">尚无响应内容。</pre>
+            </section>
+        </section>
+    </main>
+    <script>
+        const zhang_requestForm = document.getElementById("zhang_requestForm");
+        const zhang_methodSelect = document.getElementById("zhang_method");
+        const zhang_bodyField = document.getElementById("zhang_bodyField");
+        const zhang_bodyInput = document.getElementById("zhang_body");
+        const zhang_status = document.getElementById("zhang_status");
+        const zhang_responseOutput = document.getElementById("zhang_responseOutput");
+        const zhang_sendButton = document.getElementById("zhang_sendButton");
+
+        function zhang_updateBodyVisibility() {
+            zhang_bodyField.hidden = !["POST", "PUT", "PATCH"].includes(zhang_methodSelect.value);
+        }
+
+        function zhang_formatResponse(zhang_text) {
+            if (!zhang_text) return "（响应体为空）";
+            try {
+                return JSON.stringify(JSON.parse(zhang_text), null, 2);
+            } catch {
+                return zhang_text;
+            }
+        }
+
+        async function zhang_sendRequest(zhang_event) {
+            zhang_event.preventDefault();
+            const zhang_method = zhang_methodSelect.value;
+            const zhang_url = document.getElementById("zhang_url").value.trim();
+            const zhang_options = { method: zhang_method, headers: {} };
+            zhang_responseOutput.textContent = "";
+            zhang_status.dataset.state = "";
+            zhang_status.textContent = "请求发送中…";
+            zhang_sendButton.disabled = true;
+
+            try {
+                if (["POST", "PUT", "PATCH"].includes(zhang_method)) {
+                    const zhang_data = JSON.parse(zhang_bodyInput.value);
+                    zhang_options.headers["Content-Type"] = "application/json; charset=UTF-8";
+                    zhang_options.body = JSON.stringify(zhang_data);
+                }
+
+                const zhang_response = await fetch(zhang_url, zhang_options);
+                const zhang_text = await zhang_response.text();
+                const zhang_responseDetails = [
+                    `HTTP ${zhang_response.status} ${zhang_response.statusText}`,
+                    `请求方法：${zhang_method}`,
+                    `请求地址：${zhang_response.url || zhang_url}`,
+                    `响应内容：\n${zhang_formatResponse(zhang_text)}`
+                ].join("\n\n");
+                zhang_responseOutput.textContent = zhang_responseDetails;
+
+                if (!zhang_response.ok) {
+                    zhang_status.dataset.state = "error";
+                    zhang_status.textContent = `请求失败：HTTP ${zhang_response.status} ${zhang_response.statusText}`;
+                } else {
+                    zhang_status.dataset.state = "success";
+                    zhang_status.textContent = "请求成功，已显示服务器响应。";
+                }
+            } catch (zhang_error) {
+                zhang_status.dataset.state = "error";
+                if (zhang_error instanceof SyntaxError) {
+                    zhang_status.textContent = `请求未发送：JSON 格式无效（${zhang_error.message}）`;
+                    zhang_responseOutput.textContent = zhang_error.message;
+                } else {
+                    zhang_status.textContent = `请求失败：${zhang_error.message}`;
+                    zhang_responseOutput.textContent = `网络错误或接口不可访问。\n${zhang_error.message}`;
+                }
+            } finally {
+                zhang_sendButton.disabled = false;
+            }
+        }
+
+        zhang_methodSelect.addEventListener("change", zhang_updateBodyVisibility);
+        zhang_requestForm.addEventListener("submit", zhang_sendRequest);
+        zhang_updateBodyVisibility();
+    </script>
+</body>
+</html>

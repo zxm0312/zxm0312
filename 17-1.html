@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17-1 JSON 展示</title>
+    <style>
+        :root {
+            --bg1: #0f172a;
+            --bg2: #1d4ed8;
+            --card: rgba(15, 23, 42, 0.8);
+            --panel: rgba(255, 255, 255, 0.08);
+            --line: rgba(255,255,255,0.18);
+            --text: #e2e8f0;
+            --muted: #cbd5e1;
+            --accent: #93c5fd;
+            --shadow: rgba(15, 23, 42, 0.35);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+        }
+
+        .zhang_container {
+            width: min(1000px, 100%);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: 0 18px 45px var(--shadow);
+            padding: 28px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(28px, 4vw, 42px);
+            text-align: center;
+        }
+
+        .zhang_subtitle {
+            margin: 0 0 22px;
+            text-align: center;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .zhang_json_box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px 20px;
+            overflow: auto;
+        }
+
+        pre {
+            margin: 0;
+            color: var(--accent);
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .zhang_meta {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .zhang_tag {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(147, 197, 253, 0.12);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            color: var(--muted);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="zhang_container">
+        <h1>17-1 · JSON 展示</h1>
+        <p class="zhang_subtitle">原生 JavaScript 直接渲染 JSON 数据</p>
+        <div class="zhang_json_box">
+            <pre id="zhang_json_output"></pre>
+        </div>
+        <div class="zhang_meta">
+            <span class="zhang_tag">JSON</span>
+            <span class="zhang_tag">JavaScript</span>
+            <span class="zhang_tag">前端展示</span>
+        </div>
+    </div>
+
+    <script>
+        const zhang_jsonData = {
+            title: "前端学习计划",
+            stage: "第 17 章",
+            topic: "JSON 数据展示",
+            author: "312 张轩铭",
+            items: [
+                { name: "HTML", status: "已掌握" },
+                { name: "CSS", status: "已掌握" },
+                { name: "JavaScript", status: "正在学习" },
+                { name: "JSON", status: "重点练习" }
+            ],
+            meta: {
+                language: "中文",
+                environment: "浏览器",
+                mode: "原生代码"
+            }
+        };
+
+        document.getElementById("zhang_json_output").textContent = JSON.stringify(zhang_jsonData, null, 2);
+    </script>
+</body>
+</html>

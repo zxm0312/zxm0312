@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17-2 获取文章列表</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #eff6ff;
+            --shadow: rgba(31, 41, 55, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+            background: linear-gradient(180deg, #eef5ff 0%, var(--bg) 100%);
+            color: var(--text);
+        }
+
+        .zhang_container {
+            width: min(1100px, calc(100% - 32px));
+            margin: 30px auto;
+        }
+
+        .zhang_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 42px);
+        }
+
+        .zhang_btn {
+            appearance: none;
+            border: 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 999px;
+            padding: 11px 20px;
+            font: inherit;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+        }
+
+        .zhang_status {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+
+        .zhang_posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .zhang_post_card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px 18px 16px;
+            box-shadow: 0 12px 25px var(--shadow);
+        }
+
+        .zhang_post_card h2 {
+            margin: 0 0 12px;
+            font-size: 20px;
+            line-height: 1.4;
+        }
+
+        .zhang_post_card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .zhang_badge {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 6px 10px;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .zhang_empty {
+            padding: 30px;
+            background: var(--card);
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            text-align: center;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="zhang_container">
+        <div class="zhang_header">
+            <h1>17-2 · 文章列表</h1>
+            <button id="zhang_reloadBtn" class="zhang_btn" type="button">重新加载</button>
+        </div>
+        <div id="zhang_status" class="zhang_status">正在获取文章数据...</div>
+        <div id="zhang_posts" class="zhang_posts"></div>
+    </div>
+
+    <script>
+        const zhang_apiUrl = "https://jsonplaceholder.typicode.com/posts";
+        const zhang_statusBox = document.getElementById("zhang_status");
+        const zhang_postsBox = document.getElementById("zhang_posts");
+        const zhang_reloadBtn = document.getElementById("zhang_reloadBtn");
+
+        function renderPosts(posts) {
+            if (!posts || posts.length === 0) {
+                zhang_postsBox.innerHTML = '<div class="zhang_empty">暂无文章数据。</div>';
+                return;
+            }
+
+            zhang_postsBox.innerHTML = posts.slice(0, 12).map(post => `
+                <article class="zhang_post_card">
+                    <span class="zhang_badge">文章 #${post.id}</span>
+                    <h2>${post.title}</h2>
+                    <p>${post.body}</p>
+                </article>
+            `).join("");
+        }
+
+        async function loadPosts() {
+            zhang_statusBox.textContent = "正在获取文章数据...";
+            zhang_postsBox.innerHTML = "";
+
+            try {
+                const response = await fetch(zhang_apiUrl);
+                if (!response.ok) {
+                    throw new Error(`请求失败：${response.status}`);
+                }
+
+                const posts = await response.json();
+                renderPosts(posts);
+                zhang_statusBox.textContent = `已成功获取 ${posts.length} 篇文章数据。`;
+            } catch (error) {
+                zhang_statusBox.textContent = `获取失败：${error.message}`;
+                zhang_postsBox.innerHTML = '<div class="zhang_empty">数据加载失败，请稍后再试。</div>';
+            }
+        }
+
+        zhang_reloadBtn.addEventListener("click", loadPosts);
+        loadPosts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17-6 Promise 与 async 包饺子</title>
+    <style>
+        :root { --zhang_ink: #17233c; --zhang_muted: #64748b; --zhang_primary: #c2410c; --zhang_line: #fed7aa; --zhang_card: #fff; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; padding: 28px 16px; color: var(--zhang_ink); font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: linear-gradient(135deg, #fff7ed, #fffbeb); }
+        .zhang_container { width: min(1000px, 100%); margin: 0 auto; }
+        .zhang_header { text-align: center; margin-bottom: 22px; }
+        h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
+        .zhang_intro { margin: 0; color: var(--zhang_muted); line-height: 1.7; }
+        .zhang_panel { padding: 22px; background: var(--zhang_card); border: 1px solid var(--zhang_line); border-radius: 20px; box-shadow: 0 14px 35px rgba(124, 45, 18, .08); }
+        .zhang_controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+        .zhang_button { border: 0; border-radius: 10px; padding: 11px 18px; color: #fff; background: var(--zhang_primary); font: inherit; font-weight: 700; cursor: pointer; }
+        .zhang_button:disabled { opacity: .55; cursor: not-allowed; }
+        .zhang_status { color: var(--zhang_muted); }
+        .zhang_flow { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+        .zhang_step { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 12px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc; transition: background .2s, border-color .2s; }
+        .zhang_step.zhang_active { border-color: #fb923c; background: #fff7ed; }
+        .zhang_step.zhang_done { border-color: #86efac; background: #f0fdf4; }
+        .zhang_icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: #ffedd5; font-size: 20px; }
+        .zhang_stepTitle { font-weight: 700; }
+        .zhang_stepDesc { display: block; margin-top: 3px; color: var(--zhang_muted); font-size: 13px; line-height: 1.5; }
+        .zhang_stepState { color: var(--zhang_muted); font-size: 13px; white-space: nowrap; }
+        .zhang_parallel { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .zhang_note { margin: 18px 0 0; padding: 14px 16px; border-left: 4px solid #fb923c; border-radius: 8px; color: #7c2d12; background: #fff7ed; line-height: 1.7; }
+        @media (max-width: 600px) { .zhang_panel { padding: 15px; } .zhang_parallel { grid-template-columns: 1fr; } .zhang_step { grid-template-columns: 38px 1fr; } .zhang_stepState { grid-column: 2; } }
+    </style>
+</head>
+<body>
+    <main class="zhang_container">
+        <header class="zhang_header">
+            <h1>17-6 · Promise 与 async：包饺子</h1>
+            <p class="zhang_intro">用 Promise 模拟耗时任务，用 async/await 按顺序组织流程，并行和面与和馅。</p>
+        </header>
+        <section class="zhang_panel">
+            <div class="zhang_controls">
+                <button id="zhang_startButton" class="zhang_button" type="button">开始包饺子</button>
+                <span id="zhang_status" class="zhang_status" role="status" aria-live="polite">准备好了吗？点击开始。</span>
+            </div>
+            <ol class="zhang_flow">
+                <li id="zhang_step_buy" class="zhang_step"><span class="zhang_icon">🛒</span><span><span class="zhang_stepTitle">1. 买原料</span><span class="zhang_stepDesc">setTimeout 模拟购物耗时 6 秒</span></span><span class="zhang_stepState">等待中</span></li>
+                <li id="zhang_step_take" class="zhang_step"><span class="zhang_icon">🥬</span><span><span class="zhang_stepTitle">2. 取原料</span><span class="zhang_stepDesc">买到食材后取回厨房</span></span><span class="zhang_stepState">等待中</span></li>
+                <li class="zhang_parallel">
+                    <div id="zhang_step_dough" class="zhang_step"><span class="zhang_icon">🥣</span><span><span class="zhang_stepTitle">3a. 和面</span><span class="zhang_stepDesc">与和馅同时进行</span></span><span class="zhang_stepState">等待中</span></div>
+                    <div id="zhang_step_filling" class="zhang_step"><span class="zhang_icon">🥕</span><span><span class="zhang_stepTitle">3b. 和馅</span><span class="zhang_stepDesc">与和面同时进行</span></span><span class="zhang_stepState">等待中</span></div>
+                </li>
+                <li id="zhang_step_wrap" class="zhang_step"><span class="zhang_icon">🥟</span><span><span class="zhang_stepTitle">4. 包饺子</span><span class="zhang_stepDesc">等待面和馅都准备好后开始</span></span><span class="zhang_stepState">等待中</span></li>
+                <li id="zhang_step_eat" class="zhang_step"><span class="zhang_icon">🍽️</span><span><span class="zhang_stepTitle">5. 吃饺子</span><span class="zhang_stepDesc">饺子包好后开饭</span></span><span class="zhang_stepState">等待中</span></li>
+            </ol>
+            <p class="zhang_note">流程关系：买原料 → 取原料 →（和面 与 和馅 并行）→ 包饺子 → 吃饺子。买原料使用 6 秒模拟，其余步骤使用较短延时方便观察。</p>
+        </section>
+    </main>
+    <script>
+        const zhang_startButton = document.getElementById("zhang_startButton");
+        const zhang_status = document.getElementById("zhang_status");
+        const zhang_stepIds = ["buy", "take", "dough", "filling", "wrap", "eat"];
+        let zhang_running = false;
+
+        function zhang_delay(zhang_label, zhang_duration) {
+            return new Promise(zhang_resolve => {
+                window.setTimeout(() => zhang_resolve(zhang_label), zhang_duration);
+            });
+        }
+
+        function zhang_setStep(zhang_id, zhang_state, zhang_text) {
+            const zhang_step = document.getElementById(`zhang_step_${zhang_id}`);
+            zhang_step.classList.remove("zhang_active", "zhang_done");
+            if (zhang_state) zhang_step.classList.add(`zhang_${zhang_state}`);
+            zhang_step.querySelector(".zhang_stepState").textContent = zhang_text;
+        }
+
+        function zhang_resetFlow() {
+            zhang_stepIds.forEach(zhang_id => zhang_setStep(zhang_id, "", "等待中"));
+            zhang_status.textContent = "流程已重置，开始准备原料。";
+        }
+
+        async function zhang_runStep(zhang_id, zhang_name, zhang_duration) {
+            zhang_setStep(zhang_id, "active", "进行中…");
+            zhang_status.textContent = `${zhang_name}…`;
+            await zhang_delay(zhang_name, zhang_duration);
+            zhang_setStep(zhang_id, "done", "已完成");
+            zhang_status.textContent = `${zhang_name}完成`;
+        }
+
+        async function zhang_makeDumplings() {
+            if (zhang_running) return;
+            zhang_running = true;
+            zhang_startButton.disabled = true;
+            zhang_resetFlow();
+
+            try {
+                await zhang_runStep("buy", "买原料", 6000);
+                await zhang_runStep("take", "取原料", 1200);
+
+                zhang_setStep("dough", "active", "进行中…");
+                zhang_setStep("filling", "active", "进行中…");
+                zhang_status.textContent = "正在同时和面、和馅…";
+                await Promise.all([
+                    zhang_delay("和面", 3000).then(() => zhang_setStep("dough", "done", "已完成")),
+                    zhang_delay("和馅", 4200).then(() => zhang_setStep("filling", "done", "已完成"))
+                ]);
+
+                await zhang_runStep("wrap", "包饺子", 2500);
+                await zhang_runStep("eat", "吃饺子", 1800);
+                zhang_status.textContent = "全部完成！饺子做好并吃完了。";
+            } catch (zhang_error) {
+                zhang_status.textContent = `流程失败：${zhang_error.message}`;
+            } finally {
+                zhang_running = false;
+                zhang_startButton.disabled = false;
+            }
+        }
+
+        zhang_startButton.addEventListener("click", zhang_makeDumplings);
+    </script>
+</body>
+</html>
